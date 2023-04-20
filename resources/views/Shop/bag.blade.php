@@ -1,101 +1,121 @@
-@extends('layouts.app')
-@section('content')
-    <div class="product-details">
-        <img class="image" src="/images/{{ $light->image }}" style="width: 500px">
-        <div class="product-info">
-            <div class="product-name">{{ $light->name }}</div>
-            <div class="product-divider"></div>
-            <div class="product-price">{{ $light->price }}</div>
+        @extends('layouts.app')
+        @section('content')
             <div class="product-details">
-                <div>{{ $light->details }}</div>
+                <div class="product-details-left">
+                    <img class="image" src="{{ asset('images/' . $product->image) }}" style="width: 500px">
+                    <div class="product-info">
+                        <div class="product-names">
+                            <div class="product-name">{{ $product->name }}</div>
+                            <div class="product-brand">
+                                <h1>{{ $product->brand }}</h1>
+                            </div>
+                            <div class="product-wattage">{{ $product->wattage }}</div>
+                        </div>
+                        <div class="product-price-container">
+                            <div class="product-price">{{ $product->price }}$</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-details-right">
+                    <div class="product-descriptions">
+                        <div>{{ $product->descriptions }}</div>
+                    </div>
+                    <form method="POST" action="{{ route('orders.store') }}" class="my-form">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="hidden" name="product_image" value="{{ $product->image }}">
+                        <input type="hidden" name="product_name" value="{{ $product->name }}">
+                        <input type="hidden" name="product_price" value="{{ $product->price }}">
+                        <input type="number" name="quantity" value="1">
+                        <button type="submit">Add to Cart</button>
+                    </form>
+
+                </div>
             </div>
-            <button class="add-to-cart-button">Add to Cart</button>
-        </div>
-    </div>
-    <script>
-        const productId = 123;
-        const xhr = new XMLHttpRequest();
-        const addToCartUrl = '{{ route('cart.add') }}';
-        const removeFromCartUrl = '{{ route('cart.remove') }}';
-        const data = JSON.stringify({
-            id: productId,
-            image: '{{ $light->image }}',
-            name: '{{ $light->name }}',
-            price: '{{ $light->price }}',
-            details: '{{ $light->details }}',
-        });
+        @endsection
 
-        function addToCart() {
-            xhr.open('POST', addToCartUrl, true);
-            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log('Produs adaugat in cosul de cumparaturi!');
-                }
-            };
-            xhr.send(data);
-        }
+        <style>
+            .image {
+                margin-left: 60px;
+                margin-top: 0%;
+            }
 
-        function removeFromCart() {
-            xhr.open('POST', removeFromCartUrl, true);
-            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log('Produs sters din cosul de cumparaturi!');
-                }
-            };
-            xhr.send(data);
-        }
-    </script>
-@endsection
-<style>
-    .image {
-        margin-left: 60px;
-        margin-top: -19%;
-    }
+            .product-price {
+                font-size: 30px;
+                font-weight: bold;
+                margin-top: 1%;
+                color: rgb(210, 106, 8);
+                font-family: Arial, sans-serif;
+                margin-right: 20px;
+            }
 
-    .product-details {
-        display: flex;
-        align-items: center;
-    }
+            .product-name {
+                position: absolute;
+                top: 0;
+                right: 0;
+                font-size: 20px;
+                font-weight: bold;
+                color: rgb(16, 1, 9);
+                font-family: Arial, sans-serif;
+                margin-top: 120px;
+                margin-right: 500px;
+                /* Schimbați această valoare pentru a ajusta distanța între nume și margine */
+            }
 
-    .product-info {
-        margin-left: 20px;
-    }
+            .product-brand {
+                position: absolute;
+                top: 0;
+                right: 0;
+                font-size: 16px;
+                color: rgb(16, 1, 9);
+                font-family: Arial, sans-serif;
+                margin-top: 80px;
+                /* Ajustați această valoare pentru a poziționa marca */
+                margin-right: 650px;
+                /* Schimbați această valoare pentru a ajusta distanța între marcă și margine */
+            }
 
-    .product-name {
-        font-size: 22px;
-        font-weight: bold;
-        margin-top: -57%;
-    }
+            .product-wattage {
+                position: absolute;
+                top: 0;
+                right: 0;
+                font-size: 16px;
+                color: rgb(16, 1, 9);
+                font-family: Arial, sans-serif;
+                margin-top: 450px;
+                /* Ajustați această valoare pentru a poziționa wattage-ul */
+                margin-right: 700px;
+                /* Schimbați această valoare pentru a ajusta distanța între wattage și margine */
+            }
 
-    .product-price {
-        font-size: 30px;
-        font-weight: bold;
-        margin-top: 1%;
-    }
+            .product-price-container {
+                position: absolute;
+                top: 0;
+                right: 0;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
 
-    .product-price {
-        color: rgb(210, 106, 8);
-        font-family: Arial, sans-serif;
-    }
+            .product-price {
+                font-size: 30px;
+                font-weight: bold;
+                margin-top: 200%;
+                color: rgb(210, 106, 8);
+                font-family: Arial, sans-serif;
+                margin-left: -300%;
+            }
 
-    .product-name {
-        color: rgb(16, 1, 9);
-        font-family: Arial, sans-serif;
-    }
+            .product-details-right {
+                margin-top: -6%;
+                margin-left: 45%;
+                font-size: 20px;
+            }
 
-
-    .product-details {
-        margin-top: 250px;
-        font-size: 13px;
-    }
-
-    .add-to-cart-button {
-        display: block;
-        margin: 0 auto;
-        color: rgb(235, 28, 13);
-        margin-top: -40%;
-        font-size: 13px;
-    }
-</style>
+            .my-form {
+                background-color: #f49b9b;
+                padding: 10px;
+                margin-top: -10px;
+                border: 1px solid rgb(177, 187, 239);
+            }
+        </style>

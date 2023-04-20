@@ -3,19 +3,29 @@
 @section('content')
     <div class="container product-list">
         <div class="image-grid">
-            @foreach ($lights as $light)
-            <button onclick="addToCart({{ $light->id }})">Adaugă în coșul de cumpărături</button>
+            @foreach ($products as $product)
+                @csrf
+
+                @php
+                    $details = [
+                        'name' => $product->Name,
+                        'image' => $product->image,
+                        'descriptions' => $product->descriptions,
+                    ];
+
+                    $details['price'] = $product->price;
+                @endphp
 
                 <div class="image">
                     <div class="image-border">
                         <div class="grid-item product-name">
-                            {{ \Illuminate\Support\Str::limit($light->name, $limit = 15, $end = '...') }}</div>
-
+                            {{ \Illuminate\Support\Str::limit($product->name, $limit = 15, $end = '...') }}</div>
                         <div class="grid-item"></div>
                     </div>
-                    <img src="/images/{{ $light->image }}" style="width: 500px" data-id="{{ $light->id }}">
+                    <img src="/images/{{ $product->image }}" style="width: 500px" data-id="{{ $product->id }}">
                 </div>
             @endforeach
+
         </div>
     </div>
 

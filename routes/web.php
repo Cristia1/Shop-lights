@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\CardController;
-use App\Http\Controllers\LightController;
+use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,24 +20,17 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::resource('lights', 'App\Http\Controllers\LightController');
+    Route::resource('products', 'App\Http\Controllers\ProductController');
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::get('/', 'App\Http\Controllers\LightController@home')->name('home');
-    Route::get('/shop', 'App\Http\Controllers\LightController@shop')->name('shop');
-    Route::get('/shop/bag/{id}', 'App\Http\Controllers\LightController@bag')->name('bag');
-    Route::get('/search', 'App\Http\Controllers\LightController@search')->name('search');
-    Route::get('/about', 'App\Http\Controllers\LightController@about')->name('about');
-    Route::get('/cart', [CardController::class, 'show'])->name('cart.show');
+    Route::get('/shop', 'App\Http\Controllers\ProductController@shop')->name('shop');
+    Route::get('/search', 'App\Http\Controllers\ProductController@search')->name('search');
+    Route::get('/about', 'App\Http\Controllers\ProductController@about')->name('about');
+    Route::get('/shop/bag/{id}', 'App\Http\Controllers\ProductController@bag')->name('bag');
+    Route::resource('orders', OrdersController::class);
 
-    Route::get('/shop/bag/{id}', [lightController::class, 'bag'])->name('bag');
+    Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store');
 });
-Route::post('/cart/add', [CardController::class, 'add'])->name('cart.add');
-Route::post('/cart/add', 'CartController@addToCart')->name('cart.add');
-Route::post('/cart/remove', 'CartController@removeFromCart')->name('cart.remove');
-Route::get('/cart', [CardControler::class, 'index'])->name('cart.index');
-Route::post('/cart/add', [CardControler::class, 'addToCart'])->name('cart.add');
-Route::post('/cart/remove', [CardControler::class, 'removeFromCart'])->name('cart.remove');
 
-Route::get('/login', [LightController::class, 'index'])->name('login')->withoutMiddleware(['auth']);
-
-Auth::routes();
+Route::get('/login', [ProductController::class, 'index'])->name('login')->withoutMiddleware(['auth']);
+Auth::routes(['register' => true]);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
