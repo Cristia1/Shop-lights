@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Models\Orders;
+use Illuminate\Support\Facades\Auth;
+
 class ProductController extends Controller
 {
     /**
@@ -13,12 +15,9 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::latest()->paginate(5);
-        $products = Product::select('id', 'image', 'name', 'brand', 'wattage', 'price', 'descriptions')->get();
-        $product = Product::all();
-        // dd($products);
 
         return view('products.index', compact('products'))
-        ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -57,7 +56,7 @@ class ProductController extends Controller
 
         Product::create($input);
 
-        return redirect()->route('products.index')->with('success', 'Products has been created successfully.');
+        return redirect()->route('products.index')->with('success', 'Product has been created successfully.');
     }
 
     /**
@@ -81,8 +80,6 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        // dd($product);
-
         return view('products.edit', compact('product'));
     }
 
@@ -98,6 +95,7 @@ class ProductController extends Controller
         $request->validate([
             'image' => 'nullable|image|',
             'name' => 'required',
+
             'brand' => 'required',
             'wattage' => 'required',
             'price' => 'required',
@@ -136,6 +134,7 @@ class ProductController extends Controller
 
         public function home()
         {
+            // Make conection with model and get all;
             $products = Product::all();
 
             return view('home')->with('products', $products);
@@ -143,12 +142,12 @@ class ProductController extends Controller
 
         public function search()
         {
-            $search_text = request('query');
+            $search_all = request('query');
 
-            $products = Product::where('name', 'LIKE', '%'.$search_text.'%')
-                                ->orWhere('brand', 'LIKE', '%'.$search_text.'%')
-                                ->orWhere('wattage', 'LIKE', '%'.$search_text.'%')
-                                ->orWhere('price', 'LIKE', '%'.$search_text.'%')
+            $products = Product::where('name', 'LIKE', '%'.$search_all.'%')
+                                ->orWhere('brand', 'LIKE', '%'.$search_all.'%')
+                                ->orWhere('wattage', 'LIKE', '%'.$search_all.'%')
+                                ->orWhere('price', 'LIKE', '%'.$search_all.'%')
                                 ->get();
 
             return view('products.search', compact('products'));
@@ -171,5 +170,74 @@ class ProductController extends Controller
             $product = Product::findOrFail($id);
 
             return view('shop.bag', compact('product'));
+        }
+
+        public function addToCart(Request $request, $id)
+        {
+            $product = Product::find($id);
+
+            if (!$product) {
+                return response()->json(['error' => 'Product not found!'], 404);
+            }
+
+            $orders = Order::where('user_id', Auth::id())->get();
+
+            if ($orders->isEmpty()) {
+                $cart = new Cart();
+                $cart->user_id = Auth::id();
+                $cart->save();
+            } else {
+                $cart = $orders[0]->cart;
+            }
+
+            $item = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
+
+            if ($item) {
+                ++$item->quantity;
+                $item->name = $product->name;
+                $item->price = $product->price;
+                $item->total = $item->quantity * $item->price;
+                $item->save();
+            } else {
+                $item = new CartItem();
+                $item->cart_id = $cart->id;
+                $item->product_id = $product->id;
+                $item->quantity = 1;
+                $item->name = $product->name;
+                $item->price = $product->price;
+                $item->total = $item->quantity * $item->price;
+                $item->save();
+            }
+
+            return response()->json(['success' => 'Product added to cart!'], 200);
+        }
+
+        public function card(Request $request)
+        {
+            if (!Route::has('payment')) {
+                dd('Ruta "payment" nu este definită în fișierul web.php.');
+            }
+            // Validează datele primite din formular
+            $validatedData = $request->validate([
+                'card_number' => 'required|numeric|digits:16',
+                'card_holder' => 'required|string',
+                'expiration_month' => 'required|numeric|digits:2|between:1,12',
+                'expiration_year' => 'required|numeric|digits:4|after:today',
+                'cvv' => 'required|numeric|digits:3',
+            ]);
+
+            // Creează un nou obiect Card cu datele plății
+            $card = new Card([
+                'card_number' => $request->input('card_number'),
+                'card_holder' => $request->input('card_holder'),
+                'expiration_month' => $request->input('expiration_month'),
+                'expiration_year' => $request->input('expiration_year'),
+                'cvv' => $request->input('cvv'),
+            ]);
+
+            // Salvează obiectul Card în baza de date
+            $card->save();
+
+            return view('products.payment');
         }
 }

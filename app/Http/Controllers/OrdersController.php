@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
-use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
@@ -12,6 +12,7 @@ class OrdersController extends Controller
     public function index()
     {
         $orders = Order::all();
+        // dd($orders); // Debug the $orders variable
 
         return view('orders.index', compact('orders'));
     }
@@ -29,7 +30,7 @@ class OrdersController extends Controller
         $order->quantity = $request->input('quantity');
         $order->total = $request->input('product_price') * $request->input('quantity');
         $order->save();
-
+        // var_dump($request);
         // Actualizăm variabila de sesiune cart_count cu numărul actual de produse din coșul de cumpărături
         session(['cart_count' => auth()->user()->orders()->count()]);
 
@@ -74,20 +75,20 @@ class OrdersController extends Controller
         return redirect()->route('orders.index');
     }
 
-    public function addToCart(Request $request, $id)
-    {
-        $product = Product::find($id);
+    // public function addToCart(Request $request, $id)
+    // {
+    //     $product = Product::find($id);
 
-        if (!$product) {
-            return redirect()->route('shop.index')->with('error', 'Product not found!');
-        }
+    //     if (!$product) {
+    //         return redirect()->route('shop.index')->with('error', 'Product not found!');
+    //     }
 
-        $oldCart = Session::has('cart') ? Session::get('cart') : null;
-        $cart = new Cart($oldCart);
-        $cart->add($product, $product->id);
+    //     $oldCart = Session::has('cart') ? Session::get('cart') : null;
+    //     $cart = new Cart($oldCart);
+    //     $cart->add($product, $product->id);
 
-        $request->session()->put('cart', $cart);
+    //     $request->session()->put('cart', $cart);
 
-        return redirect()->route('shop.index')->with('success', 'Product added to cart!');
-    }
+    //     return redirect()->route('shop.index')->with('success', 'Product added to cart!');
+    // }
 }

@@ -5,17 +5,6 @@
         <div class="image-grid">
             @foreach ($products as $product)
                 @csrf
-
-                @php
-                    $details = [
-                        'name' => $product->Name,
-                        'image' => $product->image,
-                        'descriptions' => $product->descriptions,
-                    ];
-
-                    $details['price'] = $product->price;
-                @endphp
-
                 <div class="image">
                     <div class="image-border">
                         <div class="grid-item product-name">

@@ -26,9 +26,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/search', 'App\Http\Controllers\ProductController@search')->name('search');
     Route::get('/about', 'App\Http\Controllers\ProductController@about')->name('about');
     Route::get('/shop/bag/{id}', 'App\Http\Controllers\ProductController@bag')->name('bag');
-    Route::resource('orders', OrdersController::class);
 
-    Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store');
+    Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
+    Route::put('/orders/{id}/update', [OrdersController::class, 'update'])->name('orders.update');
+    Route::delete('/orders/{id}', [OrdersController::class, 'destroy'])->name('orders.destroy');
+    Route::get('/orders/{order}', [OrdersController::class, 'show'])->name('orders.show');
+    Route::post('orders', [App\Http\Controllers\OrdersController::class, 'store'])->name('orders.store');
 });
 
 Route::get('/login', [ProductController::class, 'index'])->name('login')->withoutMiddleware(['auth']);

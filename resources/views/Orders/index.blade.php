@@ -1,3 +1,6 @@
+able File  98 lines (86 sloc)  2.85 KB
+
+
 @extends('layouts.app')
 
 @section('content')
@@ -42,26 +45,30 @@
     <script>
         // Obțineți toate elementele de câmp de cantitate
         const quantityFields = document.querySelectorAll('.order-quantity');
-
         // Parcurgeți toate elementele de câmp de cantitate și adăugați un eveniment de schimbare a valorii
         quantityFields.forEach(quantityField => {
             quantityField.addEventListener('change', (event) => {
                 const newQuantity = event.target.value; // Obțineți noua cantitate
                 const price = event.target.parentNode.previousElementSibling.textContent; // Obțineți prețul
                 const totalField = event.target.parentNode.nextElementSibling; // Obțineți câmpul de total
-
                 // Actualizați valoarea câmpului de total
                 totalField.textContent = (price * newQuantity).toFixed(2);
             });
         });
+        $(document).ready(function() {
+            $("#myButton").click(function() {
+                var val = $("myButton").val();
+                alert('Are you sure you want to delete', val);
+            });
+        });
     </script>
 @endsection
+
 <style>
     table {
         width: 60%;
         max-width: 1200px;
         margin: 0 auto;
-
     }
 
     .navbar {
@@ -80,7 +87,6 @@
         font-size: 24px;
     }
 
-
     .back-to-shop {
         position: fixed;
         bottom: 50px;
@@ -91,7 +97,7 @@
     .back-to-shop {
         position: fixed;
         bottom: 20px;
-        right: 400px;
+        right: 100px;
         top: 100px;
         font-size: 24px;
     }

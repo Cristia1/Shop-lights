@@ -27,12 +27,35 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Adauga aici codul jQuery personalizat -->
-    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js">
+        < link href = "{{ asset('css/app.css') }}"
+        rel = "stylesheet" >
+    </script>
 
 
+    <script>
+        function addToCart(id) {
+            $.ajax({
+                url: '/cart/add/' + id,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id
+                },
+                success: function(data) {
+                    alert(data.message);
+                    // actualizează numărul de produse din coș
+                    $('#cart-count-menu').text(data.cart_count);
+                    localStorage.setItem('cart_count', data.cart_count);
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    alert('A apărut o eroare! Vă rugăm să încercați din nou mai târziu.');
+                }
+            });
+        }
+    </script>
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
-
 
 <body>
     <div id="app">
@@ -47,6 +70,8 @@
                     {{ config('app.name', 'Home') }}
                 </a>
                 @auth
+
+                    {{-- <a href="/payment" class="btn btn-second">Payment</a> --}}
                     <a href="/products" class="btn btn-second">Products</a>
                     <a href="/shop" class="btn btn-second">Shop</a>
                     <form class="d-flex" action="/search">
@@ -59,7 +84,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('orders.index') }}">
                                 <i class="fas fa-shopping-cart"></i>
-                                <span class="badge bg-danger">{{ session('cart_count', 0) }}</span>
+                                <span class="badge bg-danger"
+                                    id="cart-count-menu">{{ isset($cart_count) ? $cart_count : 0 }}</span>
+
                             </a>
                         </li>
                     </ul>
