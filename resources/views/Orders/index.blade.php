@@ -1,12 +1,9 @@
-able File  98 lines (86 sloc)  2.85 KB
-
-
 @extends('layouts.app')
 
 @section('content')
     <h1>Orders</h1>
 
-    <table class="table" route"{{ 'updete' }}">
+    <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -29,36 +26,28 @@ able File  98 lines (86 sloc)  2.85 KB
                     <td></td>
                     <td>
                         <form action="{{ route('orders.destroy', $order) }}" method="POST">
-                            <a href="{{ route('orders.show', $order) }}">Show</a>
+                            {{-- <a href="{{ route('orders.show', $order) }}">Show</a> --}}
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button id="#myButton" type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-    <tr>
-        <div class="btn back-to-shop"><a href="{{ route('shop') }}">Back to Shop</a></div>
-    </tr>
+    <div class="btn btn-info back-to-shop"><a href="{{ route('shop') }}">Back to Shop</a></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        // Obțineți toate elementele de câmp de cantitate
         const quantityFields = document.querySelectorAll('.order-quantity');
-        // Parcurgeți toate elementele de câmp de cantitate și adăugați un eveniment de schimbare a valorii
         quantityFields.forEach(quantityField => {
             quantityField.addEventListener('change', (event) => {
-                const newQuantity = event.target.value; // Obțineți noua cantitate
-                const price = event.target.parentNode.previousElementSibling.textContent; // Obțineți prețul
-                const totalField = event.target.parentNode.nextElementSibling; // Obțineți câmpul de total
-                // Actualizați valoarea câmpului de total
+                const newQuantity = event.target.value;
+                const price = event.target.parentNode.previousElementSibling.textContent;
+                const totalField = event.target.parentNode.nextElementSibling;
                 totalField.textContent = (price * newQuantity).toFixed(2);
-            });
-        });
-        $(document).ready(function() {
-            $("#myButton").click(function() {
-                var val = $("myButton").val();
-                alert('Are you sure you want to delete', val);
             });
         });
     </script>
@@ -87,18 +76,11 @@ able File  98 lines (86 sloc)  2.85 KB
         font-size: 24px;
     }
 
-    .back-to-shop {
+    .btn-info {
         position: fixed;
-        bottom: 50px;
-        right: 600px;
+        bottom: 30px;
+        right: 50px;
         font-size: 24px;
-    }
 
-    .back-to-shop {
-        position: fixed;
-        bottom: 20px;
-        right: 100px;
-        top: 100px;
-        font-size: 24px;
     }
 </style>

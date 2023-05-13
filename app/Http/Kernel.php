@@ -47,7 +47,7 @@ class Kernel extends HttpKernel
                 \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
                 'auth.api',
             ],
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ],
     ];
 

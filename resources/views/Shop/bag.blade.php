@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
     <div class="product-details">
         <div class="product-details-left">
@@ -20,56 +21,50 @@
             <div class="product-descriptions">
                 <div>{{ $product->descriptions }}</div>
             </div>
-            <form method="POST" action="{{ route('orders.store') }}" class="my-form">
+            <form action="{{ route('api.orders.store') }}" method="POST">
                 @csrf
-                <input type="hidden" name="product_name" value="{{ $product->name }}">
-                <input type="hidden" name="product_price" value="{{ $product->price }}">
+                <input id="product_id" type="hidden" name="product_id" value="{{ $product->id }}">
+                <input type="hidden" name="name" value="{{ $product->name }}">
+                <input type="hidden" name="price" value="{{ $product->price }}">
                 <input type="number" name="quantity" value="1">
-                <button type="submit">Add to Cart</button>
+                <button id="product" class="my-form">Add to Cart</button>
             </form>
-
         </div>
     </div>
 @endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-    function addToCart() {
-        const form = document.querySelector('.my-form');
-        const formData = new FormData(form);
-        fetch(form.action, {
-                method: form.method,
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    // actualizează numărul de produse din coș
-                    $('.navbar-nav .badge').text(sessionStorage.getItem('cart_count'));
-                    $('#cart-count-menu').text(sessionStorage.getItem('cart_count'));
-                } else {
-                    throw new Error('A apărut o eroare! Vă rugăm să încercați din nou mai târziu.');
-                }
-            })
-            .catch(error => {
-                alert(error.message);
+<script type="text/javascript">
+    < script type = "text/javascript" >
+        $(document).ready(function() {
+            $('#add-to-cart').click(function(event) {
+                event.preventDefault();
+
+                var form = $(this).closest('form');
+                var url = form.attr('action');
+                var data = form.serialize();
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: data,
+                    success: function(response) {
+                        console.log(response);
+                        // Redirecționează către pagina 'orders.index'
+                        window.location.href = "{{ route('api.orders.index') }}";
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr.responseText);
+                    }
+                });
             });
-    }
-
-    $(document).ready(function() {
-        $('form').submit(function(event) {
-            event.preventDefault();
-            addToCart();
         });
-
-        $('input[name="quantity"]').change(function() {
-            sessionStorage.setItem('cart_count', $(this).val());
-        });
-    });
 </script>
 
 <style>
     .image {
-        margin-left: 20%;
-        margin-top: 3%;
+        margin-left: 7%;
+        margin-top: -1%;
     }
 
     .product-price {

@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -170,74 +168,5 @@ class ProductController extends Controller
             $product = Product::findOrFail($id);
 
             return view('shop.bag', compact('product'));
-        }
-
-        public function addToCart(Request $request, $id)
-        {
-            $product = Product::find($id);
-
-            if (!$product) {
-                return response()->json(['error' => 'Product not found!'], 404);
-            }
-
-            $orders = Order::where('user_id', Auth::id())->get();
-
-            if ($orders->isEmpty()) {
-                $cart = new Cart();
-                $cart->user_id = Auth::id();
-                $cart->save();
-            } else {
-                $cart = $orders[0]->cart;
-            }
-
-            $item = CartItem::where('cart_id', $cart->id)->where('product_id', $product->id)->first();
-
-            if ($item) {
-                ++$item->quantity;
-                $item->name = $product->name;
-                $item->price = $product->price;
-                $item->total = $item->quantity * $item->price;
-                $item->save();
-            } else {
-                $item = new CartItem();
-                $item->cart_id = $cart->id;
-                $item->product_id = $product->id;
-                $item->quantity = 1;
-                $item->name = $product->name;
-                $item->price = $product->price;
-                $item->total = $item->quantity * $item->price;
-                $item->save();
-            }
-
-            return response()->json(['success' => 'Product added to cart!'], 200);
-        }
-
-        public function card(Request $request)
-        {
-            if (!Route::has('payment')) {
-                dd('Ruta "payment" nu este definită în fișierul web.php.');
-            }
-            // Validează datele primite din formular
-            $validatedData = $request->validate([
-                'card_number' => 'required|numeric|digits:16',
-                'card_holder' => 'required|string',
-                'expiration_month' => 'required|numeric|digits:2|between:1,12',
-                'expiration_year' => 'required|numeric|digits:4|after:today',
-                'cvv' => 'required|numeric|digits:3',
-            ]);
-
-            // Creează un nou obiect Card cu datele plății
-            $card = new Card([
-                'card_number' => $request->input('card_number'),
-                'card_holder' => $request->input('card_holder'),
-                'expiration_month' => $request->input('expiration_month'),
-                'expiration_year' => $request->input('expiration_year'),
-                'cvv' => $request->input('cvv'),
-            ]);
-
-            // Salvează obiectul Card în baza de date
-            $card->save();
-
-            return view('products.payment');
         }
 }

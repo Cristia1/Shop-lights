@@ -14,7 +14,6 @@ class CreateOrdersTable extends Migration
             $table->integer('quantity')->nullable();
             $table->decimal('price', 10, 2)->nullable();
             $table->decimal('total', 10, 2)->nullable();
-            $table->timestamp('ziua')->nullable();
         });
     }
 

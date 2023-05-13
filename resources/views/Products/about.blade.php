@@ -24,12 +24,6 @@
                 alert(val);
             });
         });
-        // $(document).ready(function() {
-        //     $("#myButton").click(function() {
-        //         var val = $("#myInput").val();
-
-        //     });
-        // });
     </script>
 @endsection
 <style>

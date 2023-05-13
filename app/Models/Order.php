@@ -9,7 +9,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'quantity', 'price', 'total', 'ziua'];
+    protected $fillable = ['name', 'quantity', 'price', 'total'];
     protected $primaryKey = 'id_order';
     public $timestamps = false;
 }

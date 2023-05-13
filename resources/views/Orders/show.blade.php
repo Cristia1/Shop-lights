@@ -6,44 +6,51 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">Order Details</div>
-                    <div class="panel-body">
+                    <div class="panel-body order-details">
                         <form method="POST" action="{{ route('orders.update', $order) }}">
                             @csrf
                             @method('PUT')
-                            <tbody>
-                                @csrf
-                                </form>
-                                <tr>
-                                    <td>Name:</td>
-                                    <td>{{ $order->name }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Price:</td>
-                                    <td>{{ $order->price }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Quantity:</td>
-                                    <td>{{ $order->quantity }}</td>
-
-                                </tr>
-                                <tr>
-                                    <td>Total:</td>
-                                    <td>{{ $order->total }}</td>
-                                </tr>
-                            </form>
-                            </tbody>
-                        </table>
-                        <div class="btn"><a href="{{ route('orders.index') }}">Back to Orders</a></div>
-
-
+                            <div class="name">
+                                <label>Name:</label>
+                                <span>{{ $order->name }}</span>
+                            </div>
+                            <div class="price">
+                                <label>Price:</label>
+                                <span>{{ $order->price }}</span>
+                            </div>
+                            <div class="quantity">
+                                <label>Quantity:</label>
+                                <span>{{ $order->quantity }}</span>
+                            </div>
+                            <div class="total">
+                                <label>Total:</label>
+                                <span>{{ $order->total }}</span>
+                            </div>
+                            <div class="btn">
+                                <a class="buttonOrders" href="{{ route('orders.index') }}">Back to Orders</a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
 <style>
-    .btn:hover {
-        background-color: #2980b9;
+    .order-details label {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .order-details span {
+        font-size: 24px;
+        margin-left: 20px;
+    }
+
+
+
+    .buttonOrders {
+        margin-left: 400px;
     }
 </style>

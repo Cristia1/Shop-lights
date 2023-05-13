@@ -25,35 +25,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Adauga aici codul jQuery personalizat -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js">
-        < link href = "{{ asset('css/app.css') }}"
-        rel = "stylesheet" >
-    </script>
-
-
     <script>
-        function addToCart(id) {
-            $.ajax({
-                url: '/cart/add/' + id,
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    id: id
-                },
-                success: function(data) {
-                    alert(data.message);
-                    // actualizează numărul de produse din coș
-                    $('#cart-count-menu').text(data.cart_count);
-                    localStorage.setItem('cart_count', data.cart_count);
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    alert('A apărut o eroare! Vă rugăm să încercați din nou mai târziu.');
-                }
+        $(document).ready(function() {
+            $('#add-to-cart').click(function(e) {
+                e.preventDefault();
+                // Apelați funcția addToCart aici
             });
-        }
+        });
     </script>
+    <!-- Adauga aici codul jQuery personalizat -->
+
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
@@ -63,15 +44,11 @@
             <a href="{{ url('/') }}" class="navbar-brand">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo">
             </a>
-
-
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/home') }}">
                     {{ config('app.name', 'Home') }}
                 </a>
                 @auth
-
-                    {{-- <a href="/payment" class="btn btn-second">Payment</a> --}}
                     <a href="/products" class="btn btn-second">Products</a>
                     <a href="/shop" class="btn btn-second">Shop</a>
                     <form class="d-flex" action="/search">
@@ -79,26 +56,21 @@
                             aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
-
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('orders.index') }}">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span class="badge bg-danger"
-                                    id="cart-count-menu">{{ isset($cart_count) ? $cart_count : 0 }}</span>
 
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="add-to-cart">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="badge bg-danger cart-count">{{ isset($cart_count) ? $cart_count : 0 }}</span>
                             </a>
                         </li>
                     </ul>
                 @endauth
-
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav me-auto">
                 </ul>
-
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ms-auto">
-
                     <!-- Authentication Links -->
                     @guest
                         @if (Route::has('login'))
@@ -133,7 +105,6 @@
                 </li>
             @endguest
             </ul>
-
     </div>
     </div>
     </nav>
