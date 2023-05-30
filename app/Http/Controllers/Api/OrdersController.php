@@ -86,7 +86,7 @@ class OrdersController extends Controller
     public function addToCart(Request $request)
     {
         $order = new Order();
-        $order->product_id = $request->input('product_id');
+        // $order->product_id = $request->input('product_id');
         $order->name = $request->input('name');
         $order->price = $request->input('price');
         $order->quantity = $request->input('quantity');

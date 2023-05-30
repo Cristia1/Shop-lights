@@ -1,41 +1,24 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 
 <head>
-    <style>
-        /* adauga aici stilurile tale CSS personalizate */
-        .navbar-brand img {
-            height: 30px;
-            /* Schimbați valoarea la dimensiunea dorită */
-            margin-right: -120px;
-            /* Poziționare imagine la dreapta */
-            margin-left: 90px;
-            /* Poziționare imagine la stânga */
-        }
-    </style>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    {{-- --}}
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script>
-        $(document).ready(function() {
-            $('#add-to-cart').click(function(e) {
-                e.preventDefault();
-                // Apelați funcția addToCart aici
-            });
-        });
-    </script>
+
     <!-- Adauga aici codul jQuery personalizat -->
 
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>

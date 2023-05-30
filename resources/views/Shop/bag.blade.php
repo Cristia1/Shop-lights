@@ -21,7 +21,7 @@
             <div class="product-descriptions">
                 <div>{{ $product->descriptions }}</div>
             </div>
-            <form action="{{ route('api.orders.store') }}" method="POST">
+            <form>
                 @csrf
                 <input id="product_id" type="hidden" name="product_id" value="{{ $product->id }}">
                 <input type="hidden" name="name" value="{{ $product->name }}">
@@ -32,35 +32,6 @@
         </div>
     </div>
 @endsection
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script type="text/javascript">
-    < script type = "text/javascript" >
-        $(document).ready(function() {
-            $('#add-to-cart').click(function(event) {
-                event.preventDefault();
-
-                var form = $(this).closest('form');
-                var url = form.attr('action');
-                var data = form.serialize();
-
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: data,
-                    success: function(response) {
-                        console.log(response);
-                        // Redirecționează către pagina 'orders.index'
-                        window.location.href = "{{ route('api.orders.index') }}";
-                    },
-                    error: function(xhr, status, error) {
-                        console.log(xhr.responseText);
-                    }
-                });
-            });
-        });
-</script>
-
 <style>
     .image {
         margin-left: 7%;
