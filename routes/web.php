@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\OrdersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,8 +25,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/search', 'App\Http\Controllers\ProductController@search')->name('search');
     Route::get('/about', 'App\Http\Controllers\ProductController@about')->name('about');
     Route::get('/shop/bag/{id}', 'App\Http\Controllers\ProductController@bag')->name('bag');
+    Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
 });
-
+Route::post('/logout', [Auth\LoginController::class, 'logout'])->name('logout');
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login')->withoutMiddleware(['auth']);
 Auth::routes(['register' => true]);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');

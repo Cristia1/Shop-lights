@@ -1,21 +1,17 @@
 <?php
 
-    use App\Http\Controllers\Api\OrdersController;
-    use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\OrdersController;
+use Illuminate\Support\Facades\Route;
 
-    /*
-    |--------------------------------------------------------------------------
-    | API Routes
-    |--------------------------------------------------------------------------
-    |
-    | Here is where you can register API routes for your application.
-    | These routes are loaded by the RouteServiceProvider within a group which
-    | is assigned the "api" middleware group. Enjoy building your API!
-    |
-    */
+Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
+Route::get('/orders/{id}', [OrdersController::class, 'show'])->name('orders.show');
+Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store');
+Route::put('/orders/{id}', [OrdersController::class, 'update'])->name('orders.update');
+Route::delete('/orders/{id}', [OrdersController::class, 'destroy'])->name('orders.destroy');
+Route::put('/api/orders/add-to-cart', 'App\Http\Controllers\Api\OrdersController@addToCart')->middleware('auth');
 
-    Route::get('/orders', [OrdersController::class, 'index'])->name('api.orders.index');
-    Route::post('/orders/', [OrdersController::class, 'store'])->name('api.orders.store');
-    Route::put('/orders/{id}', [OrdersController::class, 'update'])->name('api.orders.update');
-    Route::delete('/orders/{id}', [OrdersController::class, 'destroy'])->name('api.orders.destroy');
-    Route::post('/orders/add-to-cart', [OrdersController::class, 'addToCart'])->name('api.orders.addToCart');
+Route::post('/payment/card', [OrdersController::class, 'card'])->name('payment.card');
+
+Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login')->withoutMiddleware(['auth']);
+Auth::routes(['register' => true]);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');

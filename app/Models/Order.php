@@ -9,7 +9,13 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'quantity', 'price', 'total'];
+    protected $fillable = ['name', 'quantity', 'price'];
     protected $primaryKey = 'id_order';
     public $timestamps = false;
+
+    // Accessor for calculating the total
+    public function getTotalAttribute()
+    {
+        return $this->price * $this->quantity;
+    }
 }

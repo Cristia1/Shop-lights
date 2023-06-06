@@ -2,29 +2,33 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Models\Card;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 
 class OrdersController extends Controller
 {
     public function index()
     {
         $orders = Order::all();
+        $totalAmount = $orders->sum(function ($order) {
+            return $order->price * $order->quantity;
+        });
 
-        return redirect()->route('orders.index')->with('orders', $orders);
+        return view('orders.index', compact('orders', 'totalAmount'));
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'product_id' => 'required',
+            'id_order' => 'required',
             'name' => 'required',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|numeric|min:1',
         ]);
 
-        $productId = $validatedData['product_id'];
+        $productId = $validatedData['id_order'];
         $productName = $validatedData['name'];
         $productPrice = $validatedData['price'];
         $quantity = $validatedData['quantity'];
@@ -34,34 +38,23 @@ class OrdersController extends Controller
 
         $order = new Order();
 
-        $order->name = $productName;
-        $order->price = $productPrice;
-        $order->quantity = $quantity;
-        $order->total = $total;
-        $order->save();
-
-        // actualizare variabilă $order cu noua comandă creată
-        $order = $order->fresh();
-
         $orders = Order::all();
+        // var_dump($orders);
 
-        return redirect()->route('orders.index')->with('orders', $orders);
+        return view('orders.index', compact('orders'));
     }
 
     public function show($id)
     {
         $order = Order::find($id);
 
-        if (!$order) {
-            return redirect()->route('orders.index')->with('error', 'Order not found');
-        }
-
-        return view('orders.show', compact('order'));
+        return view('orders.show', compact('orders'));
     }
 
     public function update(Request $request, $id)
     {
         $order = Order::find($id);
+        $order->id_order = $request->input('id_order');
         $order->name = $request->input('name');
         $order->price = $request->input('price');
         $order->quantity = $request->input('quantity');
@@ -70,31 +63,66 @@ class OrdersController extends Controller
 
         $orders = Order::all();
 
-        return redirect()->route('orders.index')->with('orders', $orders);
+        return view('orders.index', compact('orders'));
     }
 
     public function destroy($id)
     {
         $order = Order::find($id);
-        $order->delete();
+        dd($order);
+
+        if ($order) {
+            $order->delete();
+        }
 
         $orders = Order::all();
 
-        return redirect()->route('orders.index')->with('orders', $orders);
+        return view('orders.index', compact('orders'));
     }
 
     public function addToCart(Request $request)
     {
         $order = new Order();
-        // $order->product_id = $request->input('product_id');
+        $order->id_order = $request->input('id_order');
         $order->name = $request->input('name');
         $order->price = $request->input('price');
         $order->quantity = $request->input('quantity');
-        $order->total = $order->price * $order->quantity; // calculați totalul aici
+        $order->total = $order->price * $order->quantity;
         $order->save();
 
-        $orders = Order::all();
+        $cartCount = Order::count();
+        // dd($request->all());
 
-        return redirect()->route('orders.index')->with('orders', $orders);
+        return response()->json(['cartCount' => $cartCount]);
     }
+
+   public function card(Request $request)
+   {
+       $validatedData = $request->validate([
+           'user_id' => 'required|integer',
+           'cardholder_name' => 'required|string',
+           'card_number' => 'required|string',
+           'expiration_date' => 'required|string',
+           'cvv' => 'required|string',
+       ]);
+
+       // Crearea unui nou obiect Card cu datele primite de la formular
+       $card = new Card([
+           'user_id' => $validatedData['user_id'],
+           'card_holder' => $validatedData['cardholder_name'],
+           'card_number' => $validatedData['card_number'],
+           'expiration_month' => substr($validatedData['expiration_date'], 0, 2),
+           'expiration_year' => substr($validatedData['expiration_date'], -2),
+           'cvv' => $validatedData['cvv'],
+       ]);
+
+       // Salvarea obiectului Card în baza de date
+       $card->save();
+       dd($request->all());
+
+       // Redirecționarea către o pagină de confirmare sau alte acțiuni
+       return view('orders.card', [
+        'card' => $card,
+    ]);
+   }
 }

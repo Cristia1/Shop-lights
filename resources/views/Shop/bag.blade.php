@@ -23,7 +23,7 @@
             </div>
             <form>
                 @csrf
-                <input id="product_id" type="hidden" name="product_id" value="{{ $product->id }}">
+                <input id="id_order" type="hidden" name="id_order" value="{{ $product->id }}">
                 <input type="hidden" name="name" value="{{ $product->name }}">
                 <input type="hidden" name="price" value="{{ $product->price }}">
                 <input type="number" name="quantity" value="1">
@@ -31,6 +31,8 @@
             </form>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 @endsection
 <style>
     .image {
