@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class OrdersController extends Controller
 {
@@ -85,16 +86,31 @@ class OrdersController extends Controller
 
     public function addToCart(Request $request)
     {
-        $order = new Order();
-        // $order->product_id = $request->input('product_id');
-        $order->name = $request->input('name');
-        $order->price = $request->input('price');
-        $order->quantity = $request->input('quantity');
-        $order->total = $order->price * $order->quantity; // calculați totalul aici
-        $order->save();
+        if (Auth::check()) {
+            $user_id = Auth::user()->id;
+        } else {
+            return response()->json(['status' => false]);
 
-        $orders = Order::all();
+        }
+//        dd($user_id);
+        if ($request->id) {
+            $order = new Order();
+            $order->product_id = $request->id;
+            $order->user_id = $user_id;
+            $order->save();
 
-        return redirect()->route('orders.index')->with('orders', $orders);
+            //aici numara cate produse am in baza de date
+            $orders = Order::where('user_id', $user_id)->count();
+
+            return response()->json(['status' => true, 'cartCount' => $orders]);
+        }
+
+        return response()->json(['status' => false]);
+    }
+
+
+    public function countOrders() {
+        /*aici ajunge ajax-ul tau */
+        /*si face o interogare in baza de date si iti returneaza numarul total de produse adaugate in cos*/
     }
 }

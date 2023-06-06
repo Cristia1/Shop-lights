@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\OrdersController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,3 +31,6 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login')->withoutMiddleware(['auth']);
 Auth::routes(['register' => true]);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
+
+
+Route::get('/orders/add-to-cart/{id}', [OrdersController::class, 'addToCart'])->name('api.addToCart');

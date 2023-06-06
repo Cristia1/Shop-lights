@@ -18,4 +18,3 @@
     Route::post('/orders/', [OrdersController::class, 'store'])->name('api.orders.store');
     Route::put('/orders/{id}', [OrdersController::class, 'update'])->name('api.orders.update');
     Route::delete('/orders/{id}', [OrdersController::class, 'destroy'])->name('api.orders.destroy');
-    Route::post('/orders/add-to-cart', [OrdersController::class, 'addToCart'])->name('api.orders.addToCart');
