@@ -26,11 +26,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/search', 'App\Http\Controllers\ProductController@search')->name('search');
     Route::get('/about', 'App\Http\Controllers\ProductController@about')->name('about');
     Route::get('/shop/bag/{id}', 'App\Http\Controllers\ProductController@bag')->name('bag');
+
+    Route::post('/orders', [OrdersController::class, 'index'])->name('orders.index');
+    Route::post('/logout', [AuthLoginController::class, 'logout'])->name('logout');
+    Route::get('/orders/add-to-cart', 'OrdersController@getCountOrders');
+    // Route::get('/orders/add-to-cart/{id}', [OrdersController::class, 'addToCart'])->name('addToCart');
 });
 
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login')->withoutMiddleware(['auth']);
 Auth::routes(['register' => true]);
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 
-
-Route::get('/orders/add-to-cart/{id}', [OrdersController::class, 'addToCart'])->name('api.addToCart');
+Auth::routes();

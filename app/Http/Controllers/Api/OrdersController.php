@@ -12,6 +12,7 @@ class OrdersController extends Controller
     public function index()
     {
         $orders = Order::all();
+        // dd($orders);
 
         return redirect()->route('orders.index')->with('orders', $orders);
     }
@@ -90,17 +91,17 @@ class OrdersController extends Controller
             $user_id = Auth::user()->id;
         } else {
             return response()->json(['status' => false]);
-
         }
-//        dd($user_id);
+
         if ($request->id) {
             $order = new Order();
             $order->product_id = $request->id;
             $order->user_id = $user_id;
             $order->save();
 
-            //aici numara cate produse am in baza de date
+            // aici numara cate produse am in baza de date
             $orders = Order::where('user_id', $user_id)->count();
+            // dd($order);
 
             return response()->json(['status' => true, 'cartCount' => $orders]);
         }
@@ -108,9 +109,11 @@ class OrdersController extends Controller
         return response()->json(['status' => false]);
     }
 
+    public function getCountOrders(Request $request)
+    {
+        $index_card_items = Order::where('user_id', $request->user()->id)->count();
+        dd($request->all());
 
-    public function countOrders() {
-        /*aici ajunge ajax-ul tau */
-        /*si face o interogare in baza de date si iti returneaza numarul total de produse adaugate in cos*/
+        return response()->json(['index-card-items' => $index_card_items]);
     }
 }
