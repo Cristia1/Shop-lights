@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\OrdersController;
+use App\Http\Controllers\AuthLoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::post('/logout', [AuthLoginController::class, 'logout'])->name('logout');
-    Route::get('/orders/add-to-cart', 'OrdersController@getCountOrders');
+    Route::get('/orders/add-to-cart', [OrdersController::class, 'getCountOrders']);
     // Route::get('/orders/add-to-cart/{id}', [OrdersController::class, 'addToCart'])->name('addToCart');
 });
 
