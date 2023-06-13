@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::post('/logout', [AuthLoginController::class, 'logout'])->name('logout');
     Route::get('/orders/add-to-cart', [OrdersController::class, 'getCountOrders']);
-    // Route::get('/orders/add-to-cart/{id}', [OrdersController::class, 'addToCart'])->name('addToCart');
+    Route::get('/orders/add-to-cart/{id}', [OrdersController::class, 'addToCart'])->name('addToCart');
 });
 
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login')->withoutMiddleware(['auth']);

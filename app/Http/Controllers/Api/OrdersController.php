@@ -112,7 +112,7 @@ class OrdersController extends Controller
     public function getCountOrders(Request $request)
     {
         $index_card_items = Order::where('user_id', $request->user()->id)->count();
-        dd($request->all());
+        // dd($request->all());
 
         return response()->json(['index-card-items' => $index_card_items]);
     }
